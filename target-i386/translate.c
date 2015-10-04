@@ -8170,6 +8170,9 @@ static inline void gen_intermediate_code_internal(CPUState *env,
 #ifdef CONFIG_TCG_LLVM
                     if (DECAF_is_callback_needed(DECAF_BLOCK_TRANS_CB)) {
                       tb->icount = num_insns;
+                      tb->pc_start = pc_start;
+                      tb->block_size = pc_ptr - pc_start;
+                      tb->target_cr3 = env->cr[3];
                       helper_DECAF_invoke_block_trans_callback(tb, &tcg_ctx);
                     }
 #endif /* CONFIG_TCG_LLVM */
@@ -8211,6 +8214,9 @@ static inline void gen_intermediate_code_internal(CPUState *env,
 #ifdef CONFIG_TCG_LLVM
           if(DECAF_is_callback_needed(DECAF_BLOCK_TRANS_CB)) {
             tb->icount = num_insns;
+            tb->pc_start = pc_start;
+            tb->block_size = pc_ptr - pc_start;
+            tb->target_cr3 = env->cr[3];
             helper_DECAF_invoke_block_trans_callback(tb, &tcg_ctx);
           }
 #endif /* CONFIG_TCG_LLVM */
@@ -8234,6 +8240,9 @@ static inline void gen_intermediate_code_internal(CPUState *env,
             if(DECAF_is_callback_needed(DECAF_BLOCK_TRANS_CB))
             {
               tb->icount = num_insns;
+              tb->pc_start = pc_start;
+              tb->block_size = pc_ptr - pc_start;
+              tb->target_cr3 = env->cr[3];
               helper_DECAF_invoke_block_trans_callback(tb, &tcg_ctx);
             }
 #endif /* CONFIG_TCG_LLVM */
@@ -8256,6 +8265,9 @@ static inline void gen_intermediate_code_internal(CPUState *env,
             if(DECAF_is_callback_needed(DECAF_BLOCK_TRANS_CB))
             {
               tb->icount = num_insns;
+              tb->pc_start = pc_start;
+              tb->block_size = pc_ptr - pc_start;
+              tb->target_cr3 = env->cr[3];
               helper_DECAF_invoke_block_trans_callback(tb, &tcg_ctx);
             }
 #endif /* CONFIG_TCG_LLVM */
@@ -8275,6 +8287,9 @@ static inline void gen_intermediate_code_internal(CPUState *env,
           if(DECAF_is_callback_needed(DECAF_BLOCK_TRANS_CB))
           {
             tb->icount = num_insns;
+            tb->pc_start = pc_start;
+            tb->block_size = pc_ptr - pc_start;
+            tb->target_cr3 = env->cr[3];
             helper_DECAF_invoke_block_trans_callback(tb, &tcg_ctx);
           }
 #endif /* CONFIG_TCG_LLVM */

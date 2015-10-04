@@ -13,9 +13,9 @@ DEFINES+=-I$(GLIB_CFLAGS)
 
 CC=gcc
 CPP=g++
-CFLAGS=-Wall -O2 -g -fPIC -MMD 
-# CFLAGS=-Wall -g -fPIC 
-LDFLAGS=-g -shared 
+CFLAGS=-Wall -O0 -g3 -fPIC -MMD 
+# CFLAGS=-Wall -g -fPIC
+LDFLAGS=-g3 -shared 
 
 OBJS=instruction_tracer.o
 # temu, qemu-tools removed as target

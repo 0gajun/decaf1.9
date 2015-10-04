@@ -182,6 +182,12 @@ struct Function;
 #endif /* CONFIG_TCG_LLVM */
 
 struct TranslationBlock {
+    /* extended by oga */
+    target_ulong pc_start;
+    target_ulong block_size;
+    uint32_t target_cr3;
+    /* extended by oga */
+
     target_ulong pc;   /* simulated PC corresponding to this block (EIP + CS base) */
     target_ulong cs_base; /* CS base for this block */
     uint64_t flags; /* flags defining in which context the code was generated */

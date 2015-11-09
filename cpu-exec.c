@@ -571,7 +571,11 @@ int cpu_exec(CPUState *env)
                    spans two pages, we cannot safely do a direct
                    jump. */
                 if (next_tb != 0 && tb->page_addr[1] == -1) {
+                  /* OGA: when DECAF_CPU_EXEC_CB is needed, translation blocks shouldn't be chained
+                   * with each others because cannot trace instructions in chained TB */
+                  if (!DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
                     tb_add_jump((TranslationBlock *)(next_tb & ~3), next_tb & 3, tb);
+                  }
                 }
                 spin_unlock(&tb_lock);
 
@@ -585,10 +589,10 @@ int cpu_exec(CPUState *env)
                     tc_ptr = tb->tc_ptr;
 // Modified by ogasawara start
 
-/* invoke callback after cpu execute */
-if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
-  helper_DECAF_cpu_exec_callback(env);
-}
+                    /* invoke callback after cpu execute */
+                    if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
+                      helper_DECAF_cpu_exec_callback(env);
+                    }
 
 // Modified by ogasawara end
                 /* execute the generated code */

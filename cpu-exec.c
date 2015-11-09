@@ -22,6 +22,15 @@
 #include "tcg.h"
 #include "qemu-barrier.h"
 #include "DECAF_main.h"
+//#include "shared/DECAF_callback_common.h"
+//#include "shared/DECAF_callback.h"
+
+#include "tcg-op.h"
+#include "helper.h"
+#define GEN_HELPER 1
+#include "helper.h"
+#include "shared/DECAF_main_internal.h" // AWH
+#include "shared/DECAF_callback_to_QEMU.h"
 
 int tb_invalidated_flag;
 
@@ -67,6 +76,14 @@ static void cpu_exec_nocache(CPUState *env, int max_cycles,
     tb = tb_gen_code(env, orig_tb->pc, orig_tb->cs_base, orig_tb->flags,
                      max_cycles);
     env->current_tb = tb;
+// Modified by ogasawara start
+
+/* invoke callback after cpu execute */
+if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
+  helper_DECAF_cpu_exec_callback(env);
+}
+
+// Modified by ogasawara end
     /* execute the generated code */
     next_tb = tcg_qemu_tb_exec(env, tb->tc_ptr);
     env->current_tb = NULL;
@@ -566,6 +583,14 @@ int cpu_exec(CPUState *env)
                 barrier();
                 if (likely(!env->exit_request)) {
                     tc_ptr = tb->tc_ptr;
+// Modified by ogasawara start
+
+/* invoke callback after cpu execute */
+if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
+  helper_DECAF_cpu_exec_callback(env);
+}
+
+// Modified by ogasawara end
                 /* execute the generated code */
                     next_tb = tcg_qemu_tb_exec(env, tc_ptr);
                     if ((next_tb & 3) == 2) {

@@ -19,6 +19,9 @@ DEF_HELPER_3(DECAF_invoke_block_end_callback, void, ptr, ptr, tl)
 DEF_HELPER_1(DECAF_invoke_insn_begin_callback, void, ptr)
 DEF_HELPER_1(DECAF_invoke_insn_end_callback, void, ptr)
 
+//OGA: After Cpu Execution callback helpers
+DEF_HELPER_1(DECAF_cpu_exec_callback, void, ptr)
+
 //added by Hu for better fpu emulation
 DEF_HELPER_0(DECAF_update_fpu, void);
 

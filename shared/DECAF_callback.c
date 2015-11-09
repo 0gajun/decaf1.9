@@ -1115,6 +1115,26 @@ PUSH_ALL()
 POP_ALL()
 }
 
+void helper_DECAF_cpu_exec_callback(CPUState* env) {
+  static callback_struct_t *cb_struct, *tmp;
+  static DECAF_Callback_Params params;
+
+  if (env == NULL) {
+    return;
+  }
+
+  params.ce.env = env;
+
+PUSH_ALL()
+  LIST_FOREACH(cb_struct, &callback_list_heads[DECAF_CPU_EXEC_CB], link) {
+      params.cbhandle = (DECAF_Handle)cb_struct;
+      if (!cb_struct->enabled  || *cb_struct->enabled) {
+        cb_struct->callback(&params);
+      }
+  }
+POP_ALL()
+}
+
 #ifdef CONFIG_TCG_LLVM
 void helper_DECAF_invoke_block_trans_callback(
 	const struct TranslationBlock *tb,

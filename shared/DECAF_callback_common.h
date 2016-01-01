@@ -196,6 +196,9 @@ typedef struct _DECAF_Read_Write_Mem
 typedef struct _DECAF_Cpu_Exec_Params
 {
   CPUState* env;
+  target_ulong tb_pc;
+  target_ulong tb_size;
+  int is_valid;
 }DECAF_Cpu_Exec_Params;
 
 #ifdef CONFIG_TCG_LLVM

@@ -80,7 +80,7 @@ static void cpu_exec_nocache(CPUState *env, int max_cycles,
 
 /* invoke callback after cpu execute */
 if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
-  helper_DECAF_cpu_exec_callback(env);
+  helper_DECAF_cpu_exec_callback(env, tb);
 }
 
 // Modified by ogasawara end
@@ -591,7 +591,7 @@ int cpu_exec(CPUState *env)
 
                     /* invoke callback after cpu execute */
                     if (DECAF_is_callback_needed(DECAF_CPU_EXEC_CB)) {
-                      helper_DECAF_cpu_exec_callback(env);
+                      helper_DECAF_cpu_exec_callback(env, tb);
                     }
 
 // Modified by ogasawara end

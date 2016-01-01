@@ -1115,7 +1115,7 @@ PUSH_ALL()
 POP_ALL()
 }
 
-void helper_DECAF_cpu_exec_callback(CPUState* env) {
+void helper_DECAF_cpu_exec_callback(CPUState* env, TranslationBlock *current_tb) {
   static callback_struct_t *cb_struct, *tmp;
   static DECAF_Callback_Params params;
 
@@ -1124,6 +1124,14 @@ void helper_DECAF_cpu_exec_callback(CPUState* env) {
   }
 
   params.ce.env = env;
+
+  if (current_tb == NULL) {
+    params.ce.is_valid = 0;
+  } else {
+    params.ce.is_valid = 1;
+    params.ce.tb_pc = current_tb->pc;
+    params.ce.tb_size = current_tb->size;
+  }
 
 PUSH_ALL()
   LIST_FOREACH(cb_struct, &callback_list_heads[DECAF_CPU_EXEC_CB], link) {

@@ -82,7 +82,7 @@ extern void helper_DECAF_invoke_opcode_range_callback(
   target_ulong eip,
   target_ulong next_eip,
   uint32_t op);
-extern void helper_DECAF_cpu_exec_callback(CPUState* env);
+extern void helper_DECAF_cpu_exec_callback(CPUState* env, TranslationBlock* current_tb);
 extern void DECAF_callback_init(void);
 
 #ifdef __cplusplus

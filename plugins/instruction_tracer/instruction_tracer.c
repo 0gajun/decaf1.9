@@ -17,6 +17,7 @@
 
 static plugin_interface_t instruction_tracer_interface;
 static DECAF_Handle processbegin_handle = DECAF_NULL_HANDLE;
+static DECAF_Handle processfinish_handle = DECAF_NULL_HANDLE;
 
 static DECAF_Handle instruction_tracer_cpu_exec_handle = DECAF_NULL_HANDLE;
 
@@ -30,7 +31,7 @@ target_ulong begin_pc;
 
 static unsigned char code_buf[MAX_CODE_BUF];
 
-static int is_target_program(CPUState* env)
+static inline int is_target_program(CPUState* env)
 {
   return env->cr[3] == target_cr3;
 }
@@ -79,6 +80,14 @@ static void instruction_tracer_cpu_exec_callback(DECAF_Callback_Params* params)
   }
 }
 
+static void instruction_tracer_process_finished_callback(VMI_Callback_Params* params)
+{
+  if (target_cr3 == params->rp.cr3) {
+    DECAF_printf("target process finished...\n");
+    fflush(disas_logfile);  
+  }
+}
+
 static void instruction_tracer_load_main_module_callback(VMI_Callback_Params* params)
 {
   if (target_cr3 != 0) {
@@ -93,6 +102,8 @@ static void instruction_tracer_load_main_module_callback(VMI_Callback_Params* pa
     target_cr3 = params->cp.cr3;
     instruction_tracer_cpu_exec_handle
       = DECAF_register_callback(DECAF_CPU_EXEC_CB, &instruction_tracer_cpu_exec_callback, NULL);
+    processfinish_handle
+      = VMI_register_callback(VMI_REMOVEPROC_CB, &instruction_tracer_process_finished_callback, NULL);
 
     if ((disas_logfile = fopen(LOGFILE_PATH, "w+")) == NULL) {
       DECAF_printf("log file open error!\n");
@@ -139,6 +150,10 @@ static void instraction_tracer_cleanup(void)
   if (instruction_tracer_cpu_exec_handle != DECAF_NULL_HANDLE) {
     DECAF_unregister_callback(DECAF_CPU_EXEC_CB, instruction_tracer_cpu_exec_handle);
     instruction_tracer_cpu_exec_handle = DECAF_NULL_HANDLE;
+  }
+  if (processfinish_handle != DECAF_NULL_HANDLE) {
+    VMI_unregister_callback(VMI_REMOVEPROC_CB, processfinish_handle);
+    processfinish_handle = DECAF_NULL_HANDLE;
   }
   DECAF_printf("cleaned up\n");
 }
